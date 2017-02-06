@@ -33,14 +33,24 @@ int main(int argc, char *argv[])
     // Parse the commands provided using argc and argv
 
 
+    char *str = NULL;
     // Perform an infinite loop getting command input from users
     while (fgets(buffer, BUFFER_LEN, stdin) != NULL)
     {
         // Perform string tokenization to get the command and argument
-        char *str;
-        str = scanf("%s", str);
-        char *arg = NULL;
-        char *command = strsep(&arg," ");
+        scanf("%s", str);
+        int space = 0;
+        int j = 0;
+        for(int i = 0; i < strlen(str); i++) {
+            if (str[i] == " " && space == 0) {
+                space == -1;
+            } else if (space = -1) {
+                arg[j] = str[i];
+            } else {
+                command[i] = str[i];
+            }
+        }
+        printf("command %s \n", command);
 
         // Check the command and execute the operations for each command
         // cd command -- change the current directory
@@ -49,8 +59,8 @@ int main(int argc, char *argv[])
             if(chdir(arg) == 0) {}
 
             else if (arg == NULL) { 
-            	char *getcwd(char *buf,BUFFER_LEN)
-            	printf("%s", &buf);
+            	char *buf =	getcwd(buf,BUFFER_LEN);
+            	printf("%s", buf);
             }
             else {puts("No such file or directory."); }
         }

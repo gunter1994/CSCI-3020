@@ -11,6 +11,5 @@
 // Include your relevant functions declarations here they must start with the 
 // extern keyword such as in the following example:
 // extern void display_help(void);
-extern bool is_dir(char *path);
 
 #endif /* UTILITY_H_ */

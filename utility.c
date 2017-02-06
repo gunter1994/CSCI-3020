@@ -16,11 +16,3 @@
 
 // Define your utility functions here, these will most likely be functions that you call
 // in your myshell.c source file
-
-bool is_dir(char *path) {
-    if (opendir(path) == NULL) {
-        return false;
-    } else {
-        return true;
-    }
-}
