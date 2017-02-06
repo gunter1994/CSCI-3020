@@ -12,6 +12,15 @@
 #include <sys/types.h>
 #include <string.h>
 #include "utility.h"
+#include <dirent.h>
 
 // Define your utility functions here, these will most likely be functions that you call
 // in your myshell.c source file
+
+bool is_directory(char *path) {
+    if (opendir(path) == NULL) {
+        return false;
+    } else {
+        return true;
+    }
+}
