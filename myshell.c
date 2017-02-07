@@ -77,6 +77,8 @@ int main(int argc, char *argv[])
             fputs("Unsupported command, use help to display the manual\n", stderr);
         }
         args = 0;
+        
+        strcpy(arg, "");
     }
     return EXIT_SUCCESS;
 }
