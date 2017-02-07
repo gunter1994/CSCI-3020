@@ -41,28 +41,21 @@ int main(int argc, char *argv[])
     {
         // Perform string tokenization to get the command and argument
         strcpy(command, strtok(buffer," "));
-        strcpy(arg, strtok(NULL, " "));
-      
-        printf("%s\n", command);
-        printf("%s", arg);
-
-
-        
-
-
-        // printf("command %s \n", command);
+        if (strcmp(command, buffer) != 0) {
+            strcpy(arg, strtok(NULL, ""));
+        }
 
         // Check the command and execute the operations for each command
         // cd command -- change the current directory
         if (strcmp(command, "cd") == 0)
         {
-            // if(chdir(arg) == 0) {}
+            if(chdir(arg) == 0) {}
 
-            // else if (arg == NULL) { 
-            // 	char *buf =	getcwd(buf,BUFFER_LEN);
-            // 	printf("%s", buf);
-            // }
-            // else {puts("No such file or directory."); }
+            else if (arg == NULL) { 
+            	char *buf =	getcwd(buf,BUFFER_LEN);
+            	printf("%s", buf);
+            }
+            else {puts("No such directory."); }
         }
 
         // other commands here...
