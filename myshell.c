@@ -29,21 +29,26 @@ int main(int argc, char *argv[])
     char buffer[BUFFER_LEN] = { 0 };
     char command[BUFFER_LEN] = { 0 };
     char arg[BUFFER_LEN] = { 0 };
-    char *token;
 
     // Parse the commands provided using argc and argv
 
 
     // Perform an infinite loop getting command input from users
+    int args = 0;
     while (fgets(buffer, BUFFER_LEN, stdin) != NULL)
-
-
     {
         // Perform string tokenization to get the command and argument
-        strcpy(command, strtok(buffer," "));
-        if (strcmp(command, buffer) != 0) {
-            strcpy(arg, strtok(NULL, ""));
+        if (buffer[strlen(buffer)-1] == '\n') {
+            buffer[strlen(buffer)-1] = '\0';
         }
+        strcpy(command, strtok(buffer," "));
+        if (buffer[strlen(buffer)+1] != '\0') {
+            strcpy(arg, strtok(NULL, ""));
+            args = 1;
+        }
+        
+        printf("command: %s\n", command);
+        printf("arg: %s\n", arg);
 
         // Check the command and execute the operations for each command
         // cd command -- change the current directory
@@ -51,11 +56,11 @@ int main(int argc, char *argv[])
         {
             if(chdir(arg) == 0) {}
 
-            else if (arg == NULL) { 
+            else if (args == 0) {
             	char *buf =	getcwd(buf,BUFFER_LEN);
-            	printf("%s", buf);
+            	printf("%s\n", buf);
             }
-            else {puts("No such directory."); }
+            else {fputs("No such directory.\n", stderr); }
         }
 
         // other commands here...
@@ -71,6 +76,7 @@ int main(int argc, char *argv[])
         {
             fputs("Unsupported command, use help to display the manual\n", stderr);
         }
+        args = 0;
     }
     return EXIT_SUCCESS;
 }
