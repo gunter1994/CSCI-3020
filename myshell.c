@@ -40,7 +40,12 @@ int main(int argc, char *argv[])
 
     {
         // Perform string tokenization to get the command and argument
-        token = strtok(buffer, s);
+        strcpy(command, strtok(buffer," "));
+        strcpy(arg, strtok(NULL, " "));
+      
+        printf("%s\n", command);
+        printf("%s", arg);
+
 
         
 
