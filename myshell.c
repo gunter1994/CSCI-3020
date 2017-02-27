@@ -23,7 +23,7 @@
 
 // Define functions declared in myshell.h here
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char** envp)
 {
     // Input buffer and commands
     char buffer[BUFFER_LEN] = { 0 };
@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
             args = 1;
         }
         
-        printf("command: %s\n", command);
-        printf("arg: %s\n", arg);
+        //printf("command: %s\n", command);
+        //printf("arg: %s\n", arg);
 
         // Check the command and execute the operations for each command
         // cd command -- change the current directory
@@ -64,7 +64,28 @@ int main(int argc, char *argv[])
         }
 
         // other commands here...
-        
+        else if (strcmp(command, "clr") == 0)
+        {
+            printf("\033[2J");
+        }
+        else if (strcmp(command, "dir") == 0)
+        {
+            DIR *current = opendir(".");
+            struct dirent *file;
+            while ((file = readdir(current)) != NULL)
+            {
+                printf("%s\n", file->d_name);
+            }
+            closedir(current);
+        }
+        else if (strcmp(command, "environ") == 0)
+        {
+            char** iter;
+            for(iter = envp; *iter != 0; iter++) 
+            {
+                printf("%s\n", *iter);
+            }
+        }
         // quit command -- exit the shell
         else if (strcmp(command, "quit") == 0)
         {
