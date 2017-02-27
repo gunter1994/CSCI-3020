@@ -62,8 +62,7 @@ int main(int argc, char *argv[], char** envp)
 			}
 			else {fputs("No such directory.\n", stderr); }
 		}
-
-<<<<<<< HEAD
+        
         // other commands here...
         else if (strcmp(command, "clr") == 0)
         {
@@ -93,6 +92,10 @@ int main(int argc, char *argv[], char** envp)
                 printf("%s\n", arg);
             }
         }
+        else if (strcmp(command, "help") == 0)
+		{
+			system("more README.md");
+		}
         else if (strcmp(command, "pause") == 0)
         {
             printf("Press Enter to Continue...");
@@ -103,41 +106,6 @@ int main(int argc, char *argv[], char** envp)
         {
             return EXIT_SUCCESS;
         }
-=======
-		// other commands here...
-		else if (strcmp(command, "clr") == 0)
-		{
-			printf("\033[2J");
-		}
-		else if (strcmp(command, "dir") == 0)
-		{
-			DIR *current = opendir(".");
-			struct dirent *file;
-			while ((file = readdir(current)) != NULL)
-			{
-				printf("%s\n", file->d_name);
-			}
-			closedir(current);
-		}
-		else if (strcmp(command, "environ") == 0)
-		{
-			char** iter;
-			for(iter = envp; *iter != 0; iter++) 
-			{
-				printf("%s\n", *iter);
-			}
-		}
-		else if (strcmp(command, "help") == 0)
-		{
-			system("more README.md");
-		}
-		// quit command -- exit the shell
-		else if (strcmp(command, "quit") == 0)
-		{
-			return EXIT_SUCCESS;
-		}
->>>>>>> 5121865966a6bffe01777c0d2a275bfa91b636c6
-
 		// Unsupported command
 		else
 		{
