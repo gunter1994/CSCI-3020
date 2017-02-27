@@ -47,12 +47,9 @@ int main(int argc, char *argv[], char** envp)
             args = 1;
         }
         
-<<<<<<< HEAD:myshell.c
         //printf("command: %s\n", command);
         //printf("arg: %s\n", arg);
 
-=======
->>>>>>> 1ad2f7f3a30e030287435c62d2f744363439a4e8:Lab2/myshell.c
         // Check the command and execute the operations for each command
         // cd command -- change the current directory
         if (strcmp(command, "cd") == 0)
