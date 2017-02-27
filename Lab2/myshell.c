@@ -86,6 +86,17 @@ int main(int argc, char *argv[], char** envp)
                 printf("%s\n", *iter);
             }
         }
+        else if (strcmp(command, "echo") == 0)
+        {
+            if (args == 1) {
+                printf("%s\n", arg);
+            }
+        }
+        else if (strcmp(command, "pause") == 0)
+        {
+            printf("Press Enter to Continue...");
+            getchar();
+        }
         // quit command -- exit the shell
         else if (strcmp(command, "quit") == 0)
         {
