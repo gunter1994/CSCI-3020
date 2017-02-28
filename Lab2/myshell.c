@@ -29,13 +29,20 @@ int main(int argc, char *argv[], char** envp)
 	char buffer[BUFFER_LEN] = { 0 };
 	char command[BUFFER_LEN] = { 0 };
 	char arg[BUFFER_LEN] = { 0 };
+    char filename[BUFFER_LEN] = { 0 };
 
 	// Parse the commands provided using argc and argv
-
+    FILE *input = stdin;
+    if (argc == 2) {
+        strcpy(filename, argv[1]);
+        FILE *fp = fopen(filename, "r");
+        input = fp;
+    }
+    
 
 	// Perform an infinite loop getting command input from users
 	int args = 0;
-	while (fgets(buffer, BUFFER_LEN, stdin) != NULL)
+	while (fgets(buffer, BUFFER_LEN, input) != NULL)
 	{
 		// Perform string tokenization to get the command and argument
 		if (buffer[strlen(buffer)-1] == '\n') {
@@ -62,7 +69,7 @@ int main(int argc, char *argv[], char** envp)
 			}
 			else {fputs("No such directory.\n", stderr); }
 		}
-        
+
         // other commands here...
         else if (strcmp(command, "clr") == 0)
         {
@@ -99,7 +106,10 @@ int main(int argc, char *argv[], char** envp)
         else if (strcmp(command, "pause") == 0)
         {
             printf("Press Enter to Continue...");
-            getchar();
+            char c = 0;
+            while (c != '\r' && c != '\n'){
+                c = getchar();
+            }
         }
         // quit command -- exit the shell
         else if (strcmp(command, "quit") == 0)
