@@ -18,7 +18,7 @@
 
 // global environment variables
 int puzzle[9][9]; //stores the puzzle
-int results[NUM_THREADS]; //stores results from each thread
+int results[NUM_THREADS] = {0,0,0,0,0,0,0,0,0}; //stores results from each thread
 
 // function declarations
 void *checkRows(void *thread);
@@ -58,16 +58,17 @@ int main(int argc, char *argv[])
     fclose(fp);
 
     // set up threads to for checking boxes
-    struct thread_args args;
+    struct thread_args args[9];
   
-    args.row = 0;
-    for(i = 0; i < NUM_THREADS-2; i++) {
-        if(i%3 == 0) { args.row += 3; }
-        args.thread = i;
-        args.col = 3*(i % 3);
-        pthread_create(&threads[i], NULL, checkBoxes, &args);
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            args[j + i*3].row = i*3;
+            args[j + i*3].thread = j + i*3;
+            args[j + i*3].col = j*3;
+            pthread_create(&threads[i], NULL, checkBoxes, &args[j + i*3]);
+        }
     }
-
+    
     // set up thread for checking rows
     thread = 9;
     pthread_create(&threads[thread], NULL, checkRows, (void *)thread);
@@ -77,12 +78,12 @@ int main(int argc, char *argv[])
     pthread_create(&threads[thread], NULL, checkCols, (void *)thread);
     
     for(i=0; i<NUM_THREADS; i++) {
-        pthread_join(&threads[i], NULL); 
+        pthread_join(threads[i], NULL); 
     }
 
     for(i=0; i<NUM_THREADS; i++) {
         if(results[i] == 0) {
-            printf("invalid\n");
+            printf("Num: %i invalid\n", i);
             return 0;
         }
     }
@@ -123,7 +124,7 @@ void *checkCols(void *t) {
     for(int i = 0; i < 9; i++) {
         for(int j = 0; j < 9; j++) { //checks each row for every number
             if(puzzle[j][i] != 0) {
-                numTest[puzzle[j][i] -1] ++;
+                numTest[puzzle[j][i] -1]++;
             }
         }
         for(int k = 0; k < 9; k++) {
@@ -145,10 +146,11 @@ void *checkBoxes(void *arguments) {
 	struct thread_args *args = (struct thread_args *)arguments;
     int numTest[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //defaults values to false
     
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) { //checks each box for every number
-            if(puzzle[i * args->row][j * args->col] != 0) {
-                numTest[puzzle[i * args->row][j * args->col] -1] ++;
+    for(int i = args->row; i < 3+args->row; i++) {
+        for(int j = args->col; j < 3+args->col; j++) { //checks each box for every number
+            printf("i: %i, j: %i, T: %i\n", i,j, args->thread);
+            if(puzzle[i][j] != 0) {
+                numTest[puzzle[i][j]-1]++;
             }
         }
         
@@ -163,5 +165,3 @@ void *checkBoxes(void *arguments) {
     results[args->thread] = 1;
     pthread_exit(NULL);
 }
-
-
