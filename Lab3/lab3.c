@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     // set up threads to for checking boxes
     struct thread_args args;
   
-     args.row = 0;
+    args.row = 0;
     for(i = 0; i < NUM_THREADS-2; i++) {
         if(i%3 == 0) { args.row += 3; }
         args.thread = i;
@@ -95,7 +95,21 @@ void *checkRows(void *thread) {
 
 // check if columns contain numbers 1-9
 void *checkCols(void *thread) {
-
+    _Bool numTest[9] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+    for(int i = 0; i < 9; i++) {
+        for(int k = 0; k < 9; k++) {
+            if(numTest[k] != 1) {
+                results[10] = 0;
+                return thread;
+            } else {
+                numTest[k] = 0;
+            }
+        }
+        for(int j = 0; j < 9; j++) {
+            numTest[puzzle[i][j]] = 1;
+        }
+    }
+    return thread;
 }
 
 // check if box contains numbers 1-9
