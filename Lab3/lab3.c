@@ -57,13 +57,6 @@ int main(int argc, char *argv[])
     }
     fclose(fp);
 
-    for (int i = 0; i < 9; i++) {
-        printf("\nRow %i \n", i);
-        for (int j = 0; j < 9; j++) {
-            printf("%i ", puzzle[i][j]);
-        }
-    }
-
     // set up threads to for checking boxes
     struct thread_args args;
   
@@ -77,14 +70,24 @@ int main(int argc, char *argv[])
 
     // set up thread for checking rows
     thread = 9;
-    pthread_create(&threads[0], NULL, checkRows, (void *)thread);
+    pthread_create(&threads[9], NULL, checkRows, (void *)thread);
 
     // set up thread for checking columns
     thread = 10;
-    pthread_create(&threads[1], NULL, checkCols, (void *)thread);
+    pthread_create(&threads[10], NULL, checkCols, (void *)thread);
+    
+    for(i=0; i<NUM_THREADS; i++) {
+        pthread_join(&threads[i], NULL); 
+    }
 
-    pthread_exit(NULL);
-    return 0;
+    for(i=0; i<NUM_THREADS; i++) {
+        if(results[i] == 0) {
+            printf("invalid\n");
+            return 0;
+        }
+    }
+    printf("valid");
+   return 0;
 }
 
 // check if rows contain numbers 1-9
@@ -135,14 +138,17 @@ void *checkCols(void *t) {
 
 // check if box contains numbers 1-9
 void *checkBoxes(void *arguments) {
+    int i,j,k,row,col;
 	struct thread_args *args = (struct thread_args *)arguments;
     int numTest[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //defaults values to false
-    
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) { //checks each box for every number
-            numTest[puzzle[i * args->row][j * args->col] -1] ++;
+    row = args->row;
+    col = args->col;
+
+    for(i = row; i < row+3; i++) {
+        for(j = col; j < col+3; j++) { //checks each box for every number
+            numTest[puzzle[i][j]-1]++;
         }
-        for(int k = 0; k < 9; k++) {
+        for(k = 0; k < 9; k++) {
             if(numTest[k] > 1) {  //if one num occurs twice, sets result
                 results[args->thread] = 0;
                 printf("Boxes failed"); //DELETE THIS
