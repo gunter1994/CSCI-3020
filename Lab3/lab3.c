@@ -95,18 +95,18 @@ void *checkRows(void *thread) {
 
 // check if columns contain numbers 1-9
 void *checkCols(void *thread) {
-    _Bool numTest[9] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+    _Bool numTest[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //defaults values to false
     for(int i = 0; i < 9; i++) {
+        for(int j = 0; j < 9; j++) { //checks for every number
+            numTest[puzzle[i][j]] = 1;
+        }
         for(int k = 0; k < 9; k++) {
-            if(numTest[k] != 1) {
+            if(numTest[k] != 1) {  //if one num wasnt found, returns, and sets result
                 results[10] = 0;
                 return thread;
-            } else {
+            } else { //sets rest to false again
                 numTest[k] = 0;
             }
-        }
-        for(int j = 0; j < 9; j++) {
-            numTest[puzzle[i][j]] = 1;
         }
     }
     return thread;
