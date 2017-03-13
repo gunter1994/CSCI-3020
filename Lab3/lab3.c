@@ -21,11 +21,12 @@ int puzzle[9][9]; //stores the puzzle
 int results[NUM_THREADS]; //stores results from each thread
 
 // function declarations
-void *checkRows();
-void *checkCols();
+void *checkRows(void *thread);
+void *checkCols(void *thread);
 void *checkBoxes(void *params);
 
 struct thread_args {
+    int thread;
     int row;
     int col;
 };
@@ -36,6 +37,7 @@ int main(int argc, char *argv[])
     char *line = NULL;
     char *token;
     int i,row=-1,col=-1;
+    int thread;
     pthread_t threads[NUM_THREADS];
     size_t len = 0;
     ssize_t read;
@@ -48,7 +50,7 @@ int main(int argc, char *argv[])
         token = strtok(line, " \n");
         while( token != NULL ) {
             col++;
-            puzzle[row][col] = token;
+            puzzle[row][col] = atoi(token);
             token = strtok(NULL," \n");
         }
     }
@@ -56,37 +58,35 @@ int main(int argc, char *argv[])
 
     // set up threads to for checking boxes
     struct thread_args args;
-      /*
-      [0][0], [0][3], [0][6],
-      [3][0], [3][3], [3][6],
-      [6][0], [6][3], [6][6]
-     */
-
+  
      args.row = 0;
     for(i = 0; i < NUM_THREADS-2; i++) {
         if(i%3 == 0) { args.row += 3; }
+        args.thread = i;
         args.col = 3*(i % 3);
         pthread_create(&threads[i], NULL, checkBoxes, &args);
     }
 
     // set up thread for checking rows
-    pthread_create(&threads[0], NULL, checkRows, NULL);
+    thread = 9;
+    pthread_create(&threads[0], NULL, checkRows, (void *)thread);
 
     // set up thread for checking columns
-    pthread_create(&threads[1], NULL, checkCols, NULL);
+    thread = 10;
+    pthread_create(&threads[1], NULL, checkCols, (void *)thread);
 
-   
     pthread_exit(NULL);
     return 0;
 }
 
-// check if row contains numbers 1-9
-void *checkRows() {
+// check if rows contain numbers 1-9
+void *checkRows(void *thread) {
+
 
 }
 
-// check if column contains numbers 1-9
-void *checkCols() {
+// check if columns contain numbers 1-9
+void *checkCols(void *thread) {
 
 }
 
