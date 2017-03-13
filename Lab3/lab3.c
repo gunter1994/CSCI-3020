@@ -70,11 +70,11 @@ int main(int argc, char *argv[])
 
     // set up thread for checking rows
     thread = 9;
-    pthread_create(&threads[9], NULL, checkRows, (void *)thread);
+    pthread_create(&threads[thread], NULL, checkRows, (void *)thread);
 
     // set up thread for checking columns
     thread = 10;
-    pthread_create(&threads[10], NULL, checkCols, (void *)thread);
+    pthread_create(&threads[thread], NULL, checkCols, (void *)thread);
     
     for(i=0; i<NUM_THREADS; i++) {
         pthread_join(&threads[i], NULL); 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
             return 0;
         }
     }
-    printf("valid");
+   printf("valid");
    return 0;
 }
 
@@ -97,7 +97,9 @@ void *checkRows(void *t) {
     
     for(int i = 0; i < 9; i++) {
         for(int j = 0; j < 9; j++) { //checks each row for every number
-            numTest[puzzle[i][j] -1] ++;
+            if(puzzle[i][j] != 0) {
+                numTest[puzzle[i][j] -1] ++;
+            }
         }
         for(int k = 0; k < 9; k++) {
             if(numTest[k] > 1) {  //if one num occurs twice, sets result
@@ -120,7 +122,9 @@ void *checkCols(void *t) {
     
     for(int i = 0; i < 9; i++) {
         for(int j = 0; j < 9; j++) { //checks each row for every number
-            numTest[puzzle[j][i] -1] ++;
+            if(puzzle[j][i] != 0) {
+                numTest[puzzle[j][i] -1] ++;
+            }
         }
         for(int k = 0; k < 9; k++) {
             if(numTest[k] > 1) {  //if one num occurs twice, sets result
@@ -138,27 +142,26 @@ void *checkCols(void *t) {
 
 // check if box contains numbers 1-9
 void *checkBoxes(void *arguments) {
-    int i,j,k,row,col;
 	struct thread_args *args = (struct thread_args *)arguments;
     int numTest[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //defaults values to false
-    row = args->row;
-    col = args->col;
-
-    for(i = row; i < row+3; i++) {
-        for(j = col; j < col+3; j++) { //checks each box for every number
-            numTest[puzzle[i][j]-1]++;
+    
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) { //checks each box for every number
+            if(puzzle[i * args->row][j * args->col] != 0) {
+                numTest[puzzle[i * args->row][j * args->col] -1] ++;
+            }
         }
-        for(k = 0; k < 9; k++) {
+        
+    }
+    for(int k = 0; k < 9; k++) {
             if(numTest[k] > 1) {  //if one num occurs twice, sets result
                 results[args->thread] = 0;
                 printf("Boxes failed"); //DELETE THIS
                 pthread_exit(NULL);
-            } else { //sets rest to false again
-                numTest[k] = 0;
             }
         }
-    }
     results[args->thread] = 1;
     pthread_exit(NULL);
 }
+
 
