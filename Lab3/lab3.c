@@ -88,8 +88,8 @@ int main(int argc, char *argv[])
 }
 
 // check if rows contain numbers 1-9
-void *checkRows(void *thread) {
-    struct thread_args *args = (struct thread_args *)args;
+void *checkRows(void *t) {
+    int thread = (int)t;
     int numTest[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //defaults values to false
     
     for(int i = 0; i < 9; i++) {
@@ -98,7 +98,7 @@ void *checkRows(void *thread) {
         }
         for(int k = 0; k < 9; k++) {
             if(numTest[k] > 1) {  //if one num occurs twice, sets result
-                results[args->thread] = 0;
+                results[thread] = 0;
                 printf("Rows failed"); //DELETE THIS
                 pthread_exit(NULL);
             } else { //sets rest to false again
@@ -106,14 +106,13 @@ void *checkRows(void *thread) {
             }
         }
     }
-    results[args->thread] = 1;
+    results[thread] = 1;
     pthread_exit(NULL);
 }
 
 // check if columns contain numbers 1-9
-void *checkCols(void *thread) {
-	struct thread_args *args = (struct thread_args *)args;
-
+void *checkCols(void *t) {
+    int thread = (int)t;
     int numTest[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //defaults values to false
     
     for(int i = 0; i < 9; i++) {
@@ -122,7 +121,7 @@ void *checkCols(void *thread) {
         }
         for(int k = 0; k < 9; k++) {
             if(numTest[k] > 1) {  //if one num occurs twice, sets result
-                results[args->thread] = 0;
+                results[thread] = 0;
                 printf("Columns failed"); //DELETE THIS
                 pthread_exit(NULL);
             } else { //sets rest to false again
@@ -130,13 +129,13 @@ void *checkCols(void *thread) {
             }
         }
     }
-    results[args->thread] = 1;
+    results[thread] = 1;
     pthread_exit(NULL);
 }
 
 // check if box contains numbers 1-9
 void *checkBoxes(void *arguments) {
-	struct thread_args *args = (struct thread_args *)args;
+	struct thread_args *args = (struct thread_args *)arguments;
     int numTest[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //defaults values to false
     
     for(int i = 0; i < 3; i++) {
