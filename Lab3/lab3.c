@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     FILE *fp;
     char *line = NULL;
     char *token;
-    int i,row=-1,col=-1;
+    int i,row=0,col=0;
     int thread;
     pthread_t threads[NUM_THREADS];
     size_t len = 0;
@@ -46,15 +46,23 @@ int main(int argc, char *argv[])
     fp = fopen(argv[1], "r");
     while ((read = getline(&line, &len, fp)) != -1) 
     {
-        row++;
-        token = strtok(line, " \n");
+        token = strtok(line, " ");
         while( token != NULL ) {
-            col++;
             puzzle[row][col] = atoi(token);
             token = strtok(NULL," \n");
+            col++;
         }
+        col = 0;
+        row++;
     }
     fclose(fp);
+
+    for (int i = 0; i < 9; i++) {
+        printf("\nRow %i \n", i);
+        for (int j = 0; j < 9; j++) {
+            printf("%i ", puzzle[i][j]);
+        }
+    }
 
     // set up threads to for checking boxes
     struct thread_args args;
