@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
             args[j + i*3].row = i*3;
             args[j + i*3].thread = j + i*3;
             args[j + i*3].col = j*3;
-            pthread_create(&threads[i], NULL, checkBoxes, &args[j + i*3]);
+            pthread_create(&threads[j + i*3], NULL, checkBoxes, &args[j + i*3]);
         }
     }
     
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
     for(i=0; i<NUM_THREADS; i++) {
         if(results[i] == 0) {
-            printf("Num: %i invalid\n", i);
+            printf("invalid\n");
             return 0;
         }
     }
@@ -105,7 +105,6 @@ void *checkRows(void *t) {
         for(int k = 0; k < 9; k++) {
             if(numTest[k] > 1) {  //if one num occurs twice, sets result
                 results[thread] = 0;
-                printf("Rows failed"); //DELETE THIS
                 pthread_exit(NULL);
             } else { //sets rest to false again
                 numTest[k] = 0;
@@ -130,7 +129,6 @@ void *checkCols(void *t) {
         for(int k = 0; k < 9; k++) {
             if(numTest[k] > 1) {  //if one num occurs twice, sets result
                 results[thread] = 0;
-                printf("Columns failed"); //DELETE THIS
                 pthread_exit(NULL);
             } else { //sets rest to false again
                 numTest[k] = 0;
@@ -148,7 +146,6 @@ void *checkBoxes(void *arguments) {
     
     for(int i = args->row; i < 3+args->row; i++) {
         for(int j = args->col; j < 3+args->col; j++) { //checks each box for every number
-            printf("i: %i, j: %i, T: %i\n", i,j, args->thread);
             if(puzzle[i][j] != 0) {
                 numTest[puzzle[i][j]-1]++;
             }
@@ -158,7 +155,6 @@ void *checkBoxes(void *arguments) {
     for(int k = 0; k < 9; k++) {
             if(numTest[k] > 1) {  //if one num occurs twice, sets result
                 results[args->thread] = 0;
-                printf("Boxes failed"); //DELETE THIS
                 pthread_exit(NULL);
             }
         }
