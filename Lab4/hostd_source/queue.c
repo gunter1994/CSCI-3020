@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "queue.h"
 
-void push(node_t *tail, resources res, int time)
+node_t *push(node_t *tail, resources res, int time)
 {
 	node_t *current = tail;
 	node_t *temp;
@@ -18,6 +18,7 @@ void push(node_t *tail, resources res, int time)
 	temp->time = time;
 	current->next = temp;
 	*tail = *temp;
+	return temp;
 }
 
 node_t *pop(node_t *head)

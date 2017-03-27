@@ -27,7 +27,7 @@ typedef struct {
 	struct node_t *next;
 } node_t;
 
-extern void push(node_t *tail, resources res, int time);
+extern node_t* push(node_t *tail, resources res, int time);
 extern node_t* pop(node_t *head);
 
 #endif /* QUEUE_H_ */
