@@ -21,6 +21,6 @@ extern int alloc_mem(resources res, int size);
 // Function to free the allocated contiguous chunk of memory in your resources
 // structure memory array, should take the resource struct, start index, and 
 // size (amount of memory allocated) as arguments
-extern free_mem(resources res, int index, int size);
+extern void free_mem(resources res, int index, int size);
 
 #endif /* UTILITY_H_ */

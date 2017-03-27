@@ -8,8 +8,6 @@
 #ifndef QUEUE_H_
 #define QUEUE_H_
 
-#include "utility.h"
-
 #define MEMORY 1024
 
 // Your linked list structure for your queue
