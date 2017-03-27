@@ -16,7 +16,12 @@
 // May be any values >= 0
 #define NUM_CUSTOMERS 5
 #define NUM_RESOURCES 3
+pthread mutex_t mutex;
 
+struct thread_args {
+    int customer;
+    int res[] = {0};
+};
 
 // Put global environment variables here
 // Available amount of each resource
@@ -33,32 +38,69 @@ int need[NUM_CUSTOMERS][NUM_RESOURCES];
 
 
 // Define functions declared in banker.h here
-// bool request_res(int n_customer, int request[])
-// {
-//      ...
-// }
+bool request_res(int n_customer, int request[])
+{
+
+    pthread_mutex_lock(&mutex); 
+
+
+    
+    pthread_mutex_unlock(&mutex);
+ 
+}
 
 // Release resources, returns true if successful
-// bool release_res(int n_customer, int release[])
-// {
-//      ...
-// }
+bool release_res(int n_customer, int release[])
+{
+
+    pthread_mutex_lock(&mutex); 
+
+
+    
+    pthread_mutex_unlock(&mutex);
+
+}
 
 
 int main(int argc, char *argv[])
 {
-    // ==================== YOUR CODE HERE ==================== //
+    time_t t;
+    srand((unsigned) time(&t));
 
-    // Read in arguments from CLI, NUM_RESOURCES is the number of arguments   
-    
+    // Read in arguments from CLI, NUM_RESOURCES is the number of arguments 
+     if ( argc != (NUM_RESOURCES + 1) ) { 
+         printf("Incorrect number of resources passed.\n");
+     } 
+     else {
     // Allocate the available resources
+         for(int i = 1; i <= NUM_RESOURCES; i++) {  
+             available[i] = argv[i];
+         }
+     }
+
+     // Initialize maximum array 
+     for(int i = 0; i < NUM_CUSTOMERS; i++) {
+         for(int j = 0; j < NUM_RESOURCES; j++) {
+             maximum[i][j] = rand() % (available[j] + 1);
+         }
+     }
 
     // Initialize the pthreads, locks, mutexes, etc.
-
+    pthread_t threads[NUM_CUSTOMERS];
+    struct thread_args args[NUM_CUSTOMERS];
+    
     // Run the threads and continually loop
+    while(true) {
+        for(int i = 0; i < NUM_CUSTOMERS; i++) {
+            // The threads will request and then release random numbers of resources
+            args[i].customer = i;
+            args[i].
+            if (pthread_create(&threads[i],NULL,request_res,(void *)i)) {
 
-    // The threads will request and then release random numbers of resources
-
+            }
+        }
+    }
+  
     // If your program hangs you may have a deadlock, otherwise you *may* have
     // implemented the banker's algorithm correctly
     

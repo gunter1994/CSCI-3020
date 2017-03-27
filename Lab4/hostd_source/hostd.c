@@ -19,7 +19,6 @@
 #include <string.h>
 
 // Put macros or constants here using #define
-#define MEMORY 1024
 
 // Put global environment variables here
 
@@ -51,7 +50,11 @@ int main(int argc, char *argv[])
 
 
     
+	
+
     // Add each process structure instance to the job dispatch list queue
+	
+	
 
     // Iterate through each item in the job dispatch list, add each process
     // to the appropriate queues
