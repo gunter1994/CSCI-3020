@@ -38,22 +38,19 @@ int main(int argc, char *argv[])
         while (fgets(line, sizeof(line), file)){
             dlist[i] = malloc(sizeof(line));
             strcpy(dlist[i],line);
-            // printf("%s", line);
             i++;
         }
         fclose(file);
     }
     
+    
+
+    // Add each process structure instance to the job dispatch list queue
+    
+    
     for (int j = 0; j < i; ++j){
         strtok(dlist[j], ", ");
     }
-
-
-    
-	
-
-    // Add each process structure instance to the job dispatch list queue
-	
 	
 
     // Iterate through each item in the job dispatch list, add each process
