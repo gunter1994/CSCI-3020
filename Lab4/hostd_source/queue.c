@@ -9,15 +9,21 @@
 #include <stdlib.h>
 #include "queue.h"
 
-// Define your FIFO queue functions here, these will most likely be the
-// push and pop functions that you declared in your header file
+void push(node_t *tail, resources res, int time)
+{
+	node_t *current = tail;
+	node_t *temp;
+	temp = malloc(sizeof(node_t));
+	temp->res = res;
+	temp->time = time;
+	current->next = temp;
+	*tail = *temp;
+}
 
-// node_t *push(node_t *tail, proc process);
-// {
-//      ...
-// }
-
-// node_t *pop(node_t *tail);
-// {
-//      ...
-// }
+node_t *pop(node_t *head)
+{
+	node_t *temp = head;
+	head = head->next;
+	temp->next = NULL;
+	return temp;
+}
