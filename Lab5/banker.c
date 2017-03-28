@@ -9,19 +9,15 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <pthread.h>
-#include <semaphore.h>
+#include <unistd.h>
 #include "banker.h"
 
 // Put any other macros or constants here using #define
 // May be any values >= 0
 #define NUM_CUSTOMERS 5
 #define NUM_RESOURCES 3
-pthread mutex_t mutex;
 
-struct thread_args {
-    int customer;
-    int res[] = {0};
-};
+pthread_mutex_t mutex;
 
 // Put global environment variables here
 // Available amount of each resource
@@ -40,11 +36,48 @@ int need[NUM_CUSTOMERS][NUM_RESOURCES];
 // Define functions declared in banker.h here
 bool request_res(int n_customer, int request[])
 {
+    //temp arrays
+    int res_avail[NUM_RESOURCES];
+    int res_alloc[NUM_CUSTOMERS][NUM_RESOURCES];
+    int res_need[NUM_CUSTOMERS][NUM_RESOURCES];
+
+    for(int i = 0; i < NUM_CUSTOMERS; i++) {
+        if( request[i] > need[n_customer][i] ) { return false; }
+        else if( request[i] > available[i] ) { return false; }
+        else {
+            res_avail[i] = available[i] - request[i];
+            res_alloc[n_customer][i] = allocation[n_customer][i] + request[i];
+            res_need[n_customer][i] = need[n_customer][i] - request[i];
+        }
+    }
+
+    int finish[NUM_CUSTOMERS] = {0};
+    for(int j = 0; j < NUM_RESOURCES; j++) {
+        while (true) {
+            int check = 0;
+            for(int i = 0; i < NUM_CUSTOMERS; i++) {
+                if (finish[i] == 0 && res_need[i][j] <= res_avail[i] ) {
+                    res_avail[i] += res_alloc[i][j];
+                    finish[i] = 1;
+                    check = 1;
+                }
+            }
+            if( check = 0) { break; }
+        }
+
+        for(int i = 0; i < NUM_CUSTOMERS; i++) {
+            if( finish[i] == 0 ) { return false; } 
+        }
+    }
 
     pthread_mutex_lock(&mutex); 
 
+    for(int i = 0; i < NUM_RESOURCES; i++) {
+        available[i] = res_avail[i];
+        allocation[n_customer][i] = res_alloc[n_customer][i];
+        need[n_customer][i] = res_need[n_customer][i];
+    }
 
-    
     pthread_mutex_unlock(&mutex);
  
 }
@@ -61,6 +94,40 @@ bool release_res(int n_customer, int release[])
 
 }
 
+
+// The threads will request / release random numbers of resources
+void *makeRequests(void *c) 
+{
+    int customer = (int)c;
+    int res[NUM_RESOURCES];
+
+    while(true) {
+        sleep(2);
+        int num = rand() % 2;
+        if(num == 0) { //release
+
+            for(int r = 0; r < NUM_RESOURCES; r++) {
+                res[r] = rand() % (allocation[customer][r] + 1);
+            }
+            release_res(customer, res);
+
+    
+        } else { //request
+            while (true) {
+                for(int r = 0; r < NUM_RESOURCES; r++) {
+                    res[r] = rand() % (maximum[customer][r] - allocation[customer][r] + 1);
+                }
+                if( request_res(customer, res) ) {
+                    
+                    break;
+                } else {
+                    sleep(1);
+                }
+            }
+            
+        }        
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -87,25 +154,24 @@ int main(int argc, char *argv[])
 
     // Initialize the pthreads, locks, mutexes, etc.
     pthread_t threads[NUM_CUSTOMERS];
-    struct thread_args args[NUM_CUSTOMERS];
     
     // Run the threads and continually loop
-    while(true) {
-        for(int i = 0; i < NUM_CUSTOMERS; i++) {
-            // The threads will request and then release random numbers of resources
-            args[i].customer = i;
-            args[i].
-            if (pthread_create(&threads[i],NULL,request_res,(void *)i)) {
-
-            }
-        }
+    for(int i = 0; i < NUM_CUSTOMERS; i++) {
+        pthread_create(&threads[i],NULL,makeRequests,(void *)i);
     }
+
   
-    // If your program hangs you may have a deadlock, otherwise you *may* have
+
+    return EXIT_SUCCESS;
+}
+
+
+
+
+
+
+   // If your program hangs you may have a deadlock, otherwise you *may* have
     // implemented the banker's algorithm correctly
     
     // If you are having issues try and limit the number of threads (NUM_CUSTOMERS)
     // to just 2 and focus on getting the multithreading working for just two threads
-
-    return EXIT_SUCCESS;
-}
