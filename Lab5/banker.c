@@ -41,7 +41,7 @@ bool request_res(int n_customer, int request[])
     int res_alloc[NUM_CUSTOMERS][NUM_RESOURCES];
     int res_need[NUM_CUSTOMERS][NUM_RESOURCES];
 
-    for(int i = 0; i < NUM_CUSTOMERS; i++) {
+    for(int i = 0; i < NUM_RESOURCES; i++) {
         if( request[i] > need[n_customer][i] ) { return false; }
         else if( request[i] > available[i] ) { return false; }
         else {
@@ -52,22 +52,23 @@ bool request_res(int n_customer, int request[])
     }
 
     int finish[NUM_CUSTOMERS] = {0};
-    for(int j = 0; j < NUM_RESOURCES; j++) {
-        while (true) {
-            int check = 0;
-            for(int i = 0; i < NUM_CUSTOMERS; i++) {
-                if (finish[i] == 0 && res_need[i][j] <= res_avail[i] ) {
-                    res_avail[i] += res_alloc[i][j];
-                    finish[i] = 1;
+    int cust_remain = NUM_CUSTOMERS;
+    int check = 0;
+    while(cust_remain > 0) {
+        for (int j = 0; j < NUM_CUSTOMERS; j++) {
+            for(int i = 0; i < NUM_RESOURCES; i++) {
+                if (finish[j] == 0 && res_need[j][i] <= res_avail[j] ) {
+                    res_avail[j] += res_alloc[j][i];
+                    finish[j] = 1;
+                    cust_remain--;
                     check = 1;
                 }
             }
-            if( check = 0) { break; }
         }
-
-        for(int i = 0; i < NUM_CUSTOMERS; i++) {
-            if( finish[i] == 0 ) { return false; } 
+        if (check == 0) {
+            return false;
         }
+        check = 0;
     }
 
     pthread_mutex_lock(&mutex); 
@@ -79,19 +80,23 @@ bool request_res(int n_customer, int request[])
     }
 
     pthread_mutex_unlock(&mutex);
- 
+    return true;
 }
 
 // Release resources, returns true if successful
 bool release_res(int n_customer, int release[])
 {
-
     pthread_mutex_lock(&mutex); 
 
-
+    for(int i = 0; i < NUM_RESOURCES; i++) {
+        available[i] += release[i];
+        maximum[n_customer][i] += release[i];
+        allocation[n_customer][i] -= release[i];
+        need[n_customer][i] += release[i];
+    }
     
     pthread_mutex_unlock(&mutex);
-
+    return true;
 }
 
 
@@ -110,17 +115,21 @@ void *makeRequests(void *c)
                 res[r] = rand() % (allocation[customer][r] + 1);
             }
             release_res(customer, res);
-
+            printf("(%d,%d,%d) Customer%d released resources (%d,%d,%d)\n",res[0],res[1],res[2],customer,available[0],available[1],available[2]);
+            fflush(stdout);
     
         } else { //request
             while (true) {
                 for(int r = 0; r < NUM_RESOURCES; r++) {
-                    res[r] = rand() % (maximum[customer][r] - allocation[customer][r] + 1);
+                    res[r] = rand() % (maximum[customer][r] + 1);
                 }
                 if( request_res(customer, res) ) {
-                    
+                    printf("(%d,%d,%d) Customer%d received resources (%d,%d,%d)\n",res[0],res[1],res[2],customer,available[0],available[1],available[2]);
+                    fflush(stdout);
                     break;
                 } else {
+                    printf("(%d,%d,%d) Customer%d denied resources (%d,%d,%d)\n",res[0],res[1],res[2],customer,available[0],available[1],available[2]);
+                    fflush(stdout);
                     sleep(1);
                 }
             }
@@ -141,7 +150,7 @@ int main(int argc, char *argv[])
      else {
     // Allocate the available resources
          for(int i = 1; i <= NUM_RESOURCES; i++) {  
-             available[i] = argv[i];
+             available[i] = atoi(argv[i]);
          }
      }
 
@@ -160,7 +169,7 @@ int main(int argc, char *argv[])
         pthread_create(&threads[i],NULL,makeRequests,(void *)i);
     }
 
-  
+    while (true);
 
     return EXIT_SUCCESS;
 }
