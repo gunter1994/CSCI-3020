@@ -88,15 +88,18 @@ int main(int argc, char *argv[])
         }
     }
     int timeStep = 0;
-    queue rt;
-    queue p1;
-    queue p2;
-    queue p3;
+    queue qs[4];
+    for (int k = 0; k < 4; k++) {
+        qs[k].head = NULL;
+        qs[k].tail = NULL;
+    }
     while (true){
         printf("Time step %d\n", timeStep);
         for(int j = 0; j < i; j++) {
             if(job[j].arrival == timeStep) {
-                printf("Process %d added to %s queue\n", (j+1), queueN[job[j].priority]);
+                int p = job[j].priority;
+                printf("Process %d added to %s queue\n", (j+1), queueN[p]);
+                push(qs[p].head, qs[p].tail, job[j].res, job[j].procTime);
             }
         }
         if (timeStep == latest) {

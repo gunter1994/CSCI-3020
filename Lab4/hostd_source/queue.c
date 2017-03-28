@@ -9,15 +9,21 @@
 #include <stdlib.h>
 #include "queue.h"
 
-node_t *push(node_t *tail, resources res, int time)
+node_t *push(node_t *head, node_t *tail, resources res, int time)
 {
-	node_t *current = tail;
 	node_t *temp;
 	temp = malloc(sizeof(node_t));
 	temp->res = res;
 	temp->procTime = time;
-	current->next = (struct node_t *)temp;
-	*tail = *temp;
+	temp->next = NULL;
+	if ( head == NULL ) {
+		head = temp;
+		tail = temp;
+	} else {
+		node_t *current = tail;
+		current->next = (struct node_t *)temp;
+		*tail = *temp;
+	}
 	return temp;
 }
 
