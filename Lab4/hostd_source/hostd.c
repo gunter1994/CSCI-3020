@@ -47,14 +47,49 @@ int main(int argc, char *argv[])
 
     // Add each process structure instance to the job dispatch list queue
     
-    
+
+    char *token;
+    node_t job[10];
     for (int j = 0; j < i; ++j){
-        strtok(dlist[j], ", ");
+        token = strtok(dlist[j], ", ");
+        job[j].arrival = atoi(token);
+
+        token = strtok(NULL, ", ");
+        job[j].priority = atoi(token);
+
+        token = strtok(NULL, ", ");
+        job[j].procTime = atoi(token);
+
+        token = strtok(NULL, ", ");
+        job[j].res.memory = atoi(token);
+
+        token = strtok(NULL, ", ");
+        job[j].res.printers = atoi(token);
+
+        token = strtok(NULL, ", ");
+        job[j].res.scanners = atoi(token);
+
+        token = strtok(NULL, ", ");
+        job[j].res.modems = atoi(token);
+
+        token = strtok(NULL, ", ");
+        job[j].res.cd_drives = atoi(token);
+    }
+
+    for (int j = 0; j < i; j++){
+        printf("Job %d:\nArrival: %d\t Priority: %d\t Proc time: %d\nMemory: %d\t Printers: %d\t Scanners: %d\nModems: %d\t CD Drives: %d\n\n", j+1, job[j].arrival, job[j].priority, job[j].procTime, job[j].res.memory, job[j].res.printers, job[j].res.scanners, job[j].res.modems, job[j].res.cd_drives);
     }
 	
 
     // Iterate through each item in the job dispatch list, add each process
     // to the appropriate queues
+    int j = 0;
+    int firstArrival = 0;
+    int highestPrior = 0;
+    int lwProcTime = 0;
+    while (j < i){
+        // something ?????
+    }
 
     // Allocate the resources for each process before it's executed
 
