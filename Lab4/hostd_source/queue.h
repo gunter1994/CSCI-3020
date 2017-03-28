@@ -8,8 +8,6 @@
 #ifndef QUEUE_H_
 #define QUEUE_H_
 
-#include "utility.h"
-
 #define MEMORY 1024
 
 // Your linked list structure for your queue
@@ -26,6 +24,11 @@ typedef struct {
     resources res;
 	struct node_t *next;
 } node_t;
+
+typedef struct {
+	node_t head;
+	node_t tail;	
+} queue;
 
 extern node_t* push(node_t *tail, resources res, int time);
 extern node_t* pop(node_t *head);

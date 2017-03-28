@@ -17,7 +17,7 @@ int alloc_mem(resources res, int size)
 	int chunk = 0;
 	int index = 0;
 	int check = 0;
-	for (int i = 0; i < sizeof(res.memory)/sizeof(res.memory[0]); i++) {
+	for (int i = 0; i < (int)(sizeof(res.memory)/sizeof(res.memory[0])); i++) {
 		if(chunk == size) {
 			check = 1;
 			break;
@@ -29,7 +29,7 @@ int alloc_mem(resources res, int size)
 		}
 		index++;
 	}
-	if (check = 0) {
+	if (check == 0) {
 		return -1;
 	}
 	for (int j = index; j < index+size; j++) {
@@ -38,7 +38,7 @@ int alloc_mem(resources res, int size)
 	return index;
 }
 
-free_mem(resources res, int index, int size)
+void free_mem(resources res, int index, int size)
 {
 	for (int i = index; i < index+size; i++) {
 		res.memory[i] = 0;

@@ -1,7 +1,7 @@
 /*
  * Host Dispatcher Shell Project for SOFE 3950U / CSCI 3020U: Operating Systems
  *
- * Copyright (C) 2015, <GROUP MEMBERS>
+ * Copyright (C) 2017, Hunter Thompson, Nathaniel Yearwood, Sam House
  * All rights reserved.
  * 
  */
@@ -16,6 +16,7 @@
 #include "queue.h"
 #include "utility.h"
 #include "hostd.h"
+#include <string.h>
 
 // Put macros or constants here using #define
 
@@ -28,11 +29,28 @@ int main(int argc, char *argv[])
     // ==================== YOUR CODE HERE ==================== //
     
     // Load the dispatchlist
+    char* dlist[10];
+    char line[MEMORY];
+    FILE * file;
+    int i = 0;
+    file = fopen("dispatchlist", "r");
+    if (file) {
+        while (fgets(line, sizeof(line), file)){
+            dlist[i] = malloc(sizeof(line));
+            strcpy(dlist[i],line);
+            i++;
+        }
+        fclose(file);
+    }
     
-	
+    
 
     // Add each process structure instance to the job dispatch list queue
-	
+    
+    
+    for (int j = 0; j < i; ++j){
+        strtok(dlist[j], ", ");
+    }
 	
 
     // Iterate through each item in the job dispatch list, add each process
