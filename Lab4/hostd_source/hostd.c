@@ -75,20 +75,34 @@ int main(int argc, char *argv[])
         token = strtok(NULL, ", ");
         job[j].res.cd_drives = atoi(token);
     }
-
-    for (int j = 0; j < i; j++){
-        printf("Job %d:\nArrival: %d\t Priority: %d\t Proc time: %d\nMemory: %d\t Printers: %d\t Scanners: %d\nModems: %d\t CD Drives: %d\n\n", j+1, job[j].arrival, job[j].priority, job[j].procTime, job[j].res.memory, job[j].res.printers, job[j].res.scanners, job[j].res.modems, job[j].res.cd_drives);
-    }
 	
 
     // Iterate through each item in the job dispatch list, add each process
     // to the appropriate queues
-    int j = 0;
-    int firstArrival = 0;
-    int highestPrior = 0;
-    int lwProcTime = 0;
-    while (j < i){
-        // something ?????
+    int latest = 0;
+    char *queueN[4] = { "RT", "P1", "P2", "P3" };
+
+    for (int j = 0; j < i; j++) {
+        if(job[j].arrival > latest) {
+            latest = job[j].arrival;
+        }
+    }
+    int timeStep = 0;
+    queue rt;
+    queue p1;
+    queue p2;
+    queue p3;
+    while (true){
+        printf("Time step %d\n", timeStep);
+        for(int j = 0; j < i; j++) {
+            if(job[j].arrival == timeStep) {
+                printf("Process %d added to %s queue\n", (j+1), queueN[job[j].priority]);
+            }
+        }
+        if (timeStep == latest) {
+            break;
+        }
+        timeStep++;
     }
 
     // Allocate the resources for each process before it's executed

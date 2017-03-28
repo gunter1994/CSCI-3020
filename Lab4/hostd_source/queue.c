@@ -15,7 +15,7 @@ node_t *push(node_t *tail, resources res, int time)
 	node_t *temp;
 	temp = malloc(sizeof(node_t));
 	temp->res = res;
-	temp->time = time;
+	temp->procTime = time;
 	current->next = (struct node_t *)temp;
 	*tail = *temp;
 	return temp;
