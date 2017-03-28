@@ -83,6 +83,13 @@ int main(int argc, char *argv[])
 
     // Iterate through each item in the job dispatch list, add each process
     // to the appropriate queues
+    int j = 0;
+    int firstArrival = 0;
+    int highestPrior = 0;
+    int lwProcTime = 0;
+    while (j < i){
+        // something ?????
+    }
 
     // Allocate the resources for each process before it's executed
 
