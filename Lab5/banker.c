@@ -1,7 +1,7 @@
 /*
  * Banker's Algorithm for SOFE 3950U / CSCI 3020U: Operating Systems
  *
- * Copyright (C) 2015, <GROUP MEMBERS>
+ * Copyright (C) 2015, Sam House, Hunter Thompson, Nathaniel Yearwood
  * All rights reserved.
  * 
  */
@@ -119,11 +119,11 @@ void *makeRequests(void *c)
             fflush(stdout);
     
         } else { //request
-            while (true) {
+            //while (true) {
                 for(int r = 0; r < NUM_RESOURCES; r++) {
                     res[r] = rand() % (maximum[customer][r] + 1);
                 }
-                if( request_res(customer, res) ) {
+                if( request_res(customer, res) ) { // something broke here because after customer receives resources, it prints a huge number for that resources
                     printf("(%d,%d,%d) Customer%d received resources (%d,%d,%d)\n",res[0],res[1],res[2],customer,available[0],available[1],available[2]);
                     fflush(stdout);
                     break;
@@ -134,8 +134,9 @@ void *makeRequests(void *c)
                 }
             }
             
-        }        
+        // }        
     }
+    return 0;
 }
 
 int main(int argc, char *argv[])
