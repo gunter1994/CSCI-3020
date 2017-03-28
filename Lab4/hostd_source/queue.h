@@ -1,7 +1,7 @@
 /*
  * Host Dispatcher Shell Project for SOFE 3950U / CSCI 3020U: Operating Systems
  *
- * Copyright (C) 2015, <GROUP MEMBERS>
+ * Copyright (C) 2015, Hunter Thompson, Nathaniel Yearwood, Sam House
  * All rights reserved.
  * 
  */
@@ -12,7 +12,7 @@
 
 // Your linked list structure for your queue
 typedef struct {
-	int memory[MEMORY];
+	int memory;
 	int printers;
 	int scanners;
 	int modems;
@@ -20,7 +20,9 @@ typedef struct {
 } resources;
 
 typedef struct { 
-    int time;
+    int arrival;
+    int priority;
+    int procTime;
     resources res;
 	struct node_t *next;
 } node_t;
