@@ -3,6 +3,12 @@
  *
  * Copyright (C) 2015, Sam House, Hunter Thompson, Nathaniel Yearwood
  * All rights reserved.
+
+   If your program hangs you may have a deadlock, otherwise you *may* have
+   implemented the banker's algorithm correctly
+   
+   If you are having issues try and limit the number of threads (NUM_CUSTOMERS)
+   to just 2 and focus on getting the multithreading working for just two threads
  * 
  */
 #include <stdlib.h>
@@ -51,19 +57,29 @@ bool request_res(int n_customer, int request[])
         }
     }
 
-    int finish[NUM_CUSTOMERS] = {0};
+    int finish[NUM_CUSTOMERS][NUM_RESOURCES] = {0};
     int cust_remain = NUM_CUSTOMERS;
     int check = 0;
     while(cust_remain > 0) {
-        for (int j = 0; j < NUM_CUSTOMERS; j++) {
-            for(int i = 0; i < NUM_RESOURCES; i++) {
-                if (finish[j] == 0 && res_need[j][i] <= res_avail[j] ) {
-                    res_avail[j] += res_alloc[j][i];
-                    finish[j] = 1;
-                    cust_remain--;
+        for (int i = 0; i < NUM_CUSTOMERS; i++) {
+            for(int j = 0; j < NUM_RESOURCES; j++) {
+                if (finish[i][j] == 0 && res_need[i][j] <= res_avail[j] ) {
+                    res_avail[j] += res_alloc[i][j];
+                    finish[i][j] = 1;
                     check = 1;
                 }
             }
+    
+            int clear = 0;
+            for (int k = 0; k < NUM_RESOURCES; k++) {
+                if (finish[i][k] != 1) {
+                    clear = 1;
+                }
+            }
+            if (clear == 0) {
+                cust_remain--;
+            }
+            clear = 0;  
         }
         if (check == 0) {
             return false;
@@ -90,7 +106,6 @@ bool release_res(int n_customer, int release[])
 
     for(int i = 0; i < NUM_RESOURCES; i++) {
         available[i] += release[i];
-        maximum[n_customer][i] += release[i];
         allocation[n_customer][i] -= release[i];
         need[n_customer][i] += release[i];
     }
@@ -111,30 +126,30 @@ void *makeRequests(void *c)
         int num = rand() % 2;
         if(num == 0) { //release
 
-            for(int r = 0; r < NUM_RESOURCES; r++) {
-                res[r] = rand() % (allocation[customer][r] + 1);
+            for(int i = 0; i < NUM_RESOURCES; i++) {
+                res[i] = rand() % (allocation[customer][i] + 1);
             }
             release_res(customer, res);
             printf("(%d,%d,%d) Customer%d released resources (%d,%d,%d)\n",res[0],res[1],res[2],customer,available[0],available[1],available[2]);
             fflush(stdout);
     
         } else { //request
-            //while (true) {
-                for(int r = 0; r < NUM_RESOURCES; r++) {
+            while (true) {
+                   for(int r = 0; r < NUM_RESOURCES; r++) {
                     res[r] = rand() % (maximum[customer][r] + 1);
                 }
                 if( request_res(customer, res) ) { // something broke here because after customer receives resources, it prints a huge number for that resources
-                    printf("(%d,%d,%d) Customer%d received resources (%d,%d,%d)\n",res[0],res[1],res[2],customer,available[0],available[1],available[2]);
+                    printf("Customer%d received resources (%d,%d,%d). Available: (%d,%d,%d)\n",customer,res[0],res[1],res[2],available[0],available[1],available[2]);
                     fflush(stdout);
                     break;
                 } else {
-                    printf("(%d,%d,%d) Customer%d denied resources (%d,%d,%d)\n",res[0],res[1],res[2],customer,available[0],available[1],available[2]);
+                    printf("Customer%d denied resources (%d,%d,%d). Available: (%d,%d,%d)\n",customer, res[0],res[1],res[2],available[0],available[1],available[2]);
                     fflush(stdout);
                     sleep(1);
                 }
             }
             
-        // }        
+        }        
     }
     return 0;
 }
@@ -170,18 +185,9 @@ int main(int argc, char *argv[])
         pthread_create(&threads[i],NULL,makeRequests,(void *)i);
     }
 
-    while (true);
+    for(int i = 0; i < NUM_CUSTOMERS; i++) {
+        pthread_join(threads[i],NULL);
+    }
 
     return EXIT_SUCCESS;
 }
-
-
-
-
-
-
-   // If your program hangs you may have a deadlock, otherwise you *may* have
-    // implemented the banker's algorithm correctly
-    
-    // If you are having issues try and limit the number of threads (NUM_CUSTOMERS)
-    // to just 2 and focus on getting the multithreading working for just two threads
