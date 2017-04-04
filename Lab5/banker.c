@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
      } 
      else {
     // Allocate the available resources
-         for(int i = 1; i <= NUM_RESOURCES; i++) {  
+         for(int i = 0; i < NUM_RESOURCES; i++) {  
              available[i] = atoi(argv[i]);
          }
      }
